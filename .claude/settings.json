@@ -1,0 +1,71 @@
+{
+  "permissions": {
+    "deny": [
+      "mcp__ccd_session_mgmt__clear_session",
+      "mcp__ccd_session_mgmt__set_session_title"
+    ]
+  },
+  "enabledPlugins": {
+    "mattpocock-skills@claude-plugins-official": false,
+    "mattpocock-skills@mattpocock": false
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it hook pre-tool-use"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it.tickets.hook",
+            "timeout": 90
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it.guards.text_hook || { echo 'orch-it: the text check cannot run (no Python imports orch_it, or the hook failed); install orch-it into the Python the hooks run with python -m pip install -e <orch-it checkout>, then send the call again' >&2; exit 2; }",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {"type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it hook brain", "timeout": 60}
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {"type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it hook subagent-stop", "timeout": 60}
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {"type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it skills shadowed", "timeout": 60}
+        ]
+      },
+      {
+        "hooks": [
+          {"type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR\"/hooks/orch-it -m orch_it hook brain", "timeout": 60}
+        ]
+      }
+    ]
+  }
+}

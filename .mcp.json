@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "orch-it-research": {
+      "type": "stdio",
+      "command": "${ORCH_IT_PYTHON}",
+      "args": ["-m", "orch_it", "research-mcp"],
+      "env": {
+        "RESEARCH_API_KEY": "${RESEARCH_API_KEY:-}",
+        "ORCH_IT_SETTINGS": "${ORCH_IT_SETTINGS:-}",
+        "ORCH_IT_STORE": "${ORCH_IT_STORE:-}"
+      }
+    }
+  }
+}
